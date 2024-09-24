@@ -1,0 +1,13 @@
+//================logical bugs and extension =================
+passStatus should be cleared after the response
+document_ids/selectedDocuments should be cleared after the response
+make student in shipment page searchable by id or roll no.
+
+
+//======================= UI improvements =================
+preloader when fetching APIs from backend
+sidebar menu link
+snackbar on validation error on marksheet and shipment page
+
+
+ATBByBeJhWKh38sKqxygzcdaBwU7AEA68FA2
