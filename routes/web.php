@@ -58,7 +58,9 @@ Route::get('/fetch/students', [DashboardController::class, 'fetchStudents']);
 Route::get('/dashboard/exam_cycle/timeline', [DashboardController::class, 'examCycleTimeline']);
 Route::get('/dashboard/populateExamCycle', [DashboardController::class, 'populateExamCycle']);
 // ============================== Public Controller =============================
-Route::get('/shipment/track/{client_code}/{student_rollNo?}', [PublicController::class, 'studentShipmentByRollNo'])->middleware('PublicToken');
+// Route::get('/shipment/track/{client_code}/{student_rollNo?}', [PublicController::class, 'studentShipmentByRollNo'])->middleware('PublicToken');
+Route::get('/shipment/track/{client_code}', [PublicController::class, 'visitShipmentTracking']);
+Route::post('/shipment/fetch', [PublicController::class, 'studentShipmentByRollNo']);
 
 
 require __DIR__.'/auth.php';

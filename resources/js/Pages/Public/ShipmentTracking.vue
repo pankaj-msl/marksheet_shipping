@@ -9,7 +9,7 @@
                     
                         <v-col cols="6" md="4">
                             <v-text-field
-                            v-model="name"
+                            v-model="form.student_name"
                             label="Enter your name"
                             variant="outlined"
                             hide-details
@@ -20,7 +20,7 @@
                     </v-col>
                     <v-col cols="6" md="5">
                             <v-text-field
-                            v-model="student_rollNo"
+                            v-model="form.student_roll_no"
                             label="Search roll number"
                             prepend-inner-icon="mdi-magnify"
                             variant="outlined"
@@ -57,7 +57,7 @@
                     <strong>Exam Cycle:</strong> {{ student.exam_cycle }}
                     </v-col>
                     <v-col cols="3" class="py-1">
-                    <strong>Passing Year:</strong> {{ student.student_passing_year }}
+                    <strong>Passing Year:</strong> {{ formatDate(student.student_passing_year) }}
                     </v-col>
                     <v-col cols="3" class="py-1">
                     <strong>Exam Status:</strong> {{ student.student_exam_status }}
@@ -204,7 +204,7 @@
                                 {{ shipment.delivery_status || 'N/A' }}
                             </td>
                             <td
-                                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6" 
                             >
                                 {{ shipment.delivered_at || 'N/A' }}
                             </td>
@@ -218,48 +218,65 @@
 </div>
   </v-sheet>
         </section>
+
+<v-snackbar
+    v-model="snackbar"
+    :timeout="5000"
+    color="orange-darken-2"
+    elevation="24">
+    {{ message }}
+</v-snackbar>
 </template>
 
 <script setup>
-import Header from "../Layouts/Header.vue";
-import { ref, watch, onBeforeMount } from "vue";
-import { usePage, router } from "@inertiajs/vue3";
+import { ref, watch } from "vue";
+import { usePage, router, useForm } from "@inertiajs/vue3";
 import axios from "axios";
+
 defineProps({
     client: {
         type: Object,
         required: true,
     },
-    admin: {
-        type: Object,
-        required: true,
-    },
-    student: {
-        type: Object,
-        required: true
-    },
-    shipments: {
-        type: Object,
-        required: true
-    },
 });
-let client_code = usePage().props.client.code;
-const student = ref(usePage().props.student);
-const shipments = ref(usePage().props.shipments);
-let student_rollNo = ref("");
-let name = ref("");
 
-watch(name, (newVal) => {
-    console.log(name.value);
-})
+const student = ref({});
+const shipments = ref([]);
+const snackbar = ref(false);
+let message = ref("");
+const form = useForm({
+    student_name: "",
+    student_roll_no: "",
+    client_code: usePage().props.client.code,
+});
 
 const getShipmentTracking = () => {
-    if(name.value.length === 0) {
-        alert("Please enter student name");
+    if(form.student_name.length === 0 || form.student_roll_no.length === 0) {
+        alert("Please Fill all details");
         return;
     }
 
-    router.visit(`/shipment/track/${client_code}/${student_rollNo.value}`);
+    axios.post(`/shipment/fetch`, form)
+    .then((response) => {
+        snackbar.value = true;
+        message = "Student details fetched successfully";
+        student.value = response.data.student;
+        shipments.value = response.data.shipments;
+    })
+    .catch((error) => {
+        snackbar.value = true;
+        message = "Failed to fetch student details";
+        console.error(error);
+    });
+}
+
+const formatDate = (dateString) => {
+      const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      });
 }
 </script>
 
