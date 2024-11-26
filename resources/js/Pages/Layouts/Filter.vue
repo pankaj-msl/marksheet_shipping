@@ -1,6 +1,7 @@
 <template>
+   <v-sheet class="v-card v-theme--light v-card--density-default v-card--variant-elevated mx-auto card-shadow mb-5 py-5">
     <v-form>
-        <v-row>
+        <v-row class="pt-4">
             <v-col cols="12" md="3">
                 <div class="form-floating mb-3">
                     <select v-model="form.department_id" name="department_id" id="department" class="select2 form-control">
@@ -34,14 +35,30 @@
                         <option v-if="isLoading">Loading ...</option>
                         <option v-else v-for="examCycle in examCycles" :value="examCycle.exam_cycle">{{ examCycle.exam_cycle }}</option>
                     </select>
-                    <label for="floatingSelect">Select ExamCycle</label>
+                    <label for="floatingSelect">Select Exam Cycle</label>
                 </div>
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="12">
                 <v-form
                 @submit.prevent="fileUpload"
                 >
-                <v-row class="align-center">
+                <v-row class="d-flex justify-content-center align-items-center">
+                    <v-col cols="6" class="">
+                     <!-- <v-btn class="" :href="'/sample_format.csv'">Download Sample Format</v-btn> -->
+                     <a href="/sample_format.csv">
+                     <v-alert
+                        class="alert"
+                        text="Please fill up the relevant details in the sample format provided in the link and then upload it.Click to download the sample file"
+                        title="Note:"
+                        border="start"
+                        border-color="deep-purple accent-4"
+                        elevation="2"
+                        type=""
+                    ></v-alert>
+                    </a>
+                    </v-col>
+                    <v-col cols="6">
+                    <v-row class="justify-content-center align-items-center">
                     <v-col cols="8">
                         <v-file-input
                             v-model="csvFile"
@@ -55,28 +72,27 @@
                         <button type="submit" class="btn btn-primary">Upload</button>
                     </v-col>
                 </v-row>
+                </v-col>
+                </v-row>
                 </v-form>
             </v-col>
-            <v-col cols="3" class="d-flex align-self-center">
-                <v-btn class="ooey-gooey text-white" :href="'/sample_format.csv'">Download Sample Format</v-btn>
-            </v-col>
+
         </v-row>
     </v-form>
+</v-sheet>
 
     <!-- Data and Display -->
+    <v-sheet class="v-card v-theme--light v-card--density-default v-card--variant-elevated mx-auto card-shadow mb-5">
+    <v-card title="Marksheet Data and Display" flat >
 
-    <v-card
-    title="Marksheet Data and Display"
-    flat
-  >
-
-    <DataTable :students="students"></DataTable>
+      <DataTable :students="students"></DataTable>
     <!-- <Pagination :students="students"></Pagination> -->
 
 
     <!-- ======================================= pagination ends here ================================= -->
 
   </v-card>
+  </v-sheet>
 
      <!-- End Data and Display -->
 </template>
@@ -85,12 +101,14 @@
 import { useForm } from '@inertiajs/vue3';
 import DataTable from '@/Components/DataTable.vue'
 import { ref, computed, watch, reactive, onMounted } from 'vue';
+import { useToast } from "vue-toastification";
 import axios from 'axios';
 
 const departments = ref([]);
 const batches = ref([]);
 const examCycles = ref([]);
 const isLoading = ref(true);
+const toast = useToast();
 
 //============================ fetching programs and batches =============================
 onMounted(()=>{
@@ -101,7 +119,7 @@ onMounted(()=>{
          departments.value = response.data[1];
          examCycles.value = response.data[2];
          console.log(departments, batches, examCycles);
- 
+
     })
     .catch(error => {
          console.log(error);
@@ -125,6 +143,27 @@ const students = ref([]);
 
 // ============================== uploading marksheet files =============================
 const fileUpload = () => {
+    // Validation checks
+    if (!csvFile.value) {
+        alert('Please select a CSV file.');
+        return;
+    }
+    if (!form.department_id) {
+        alert('Please select a department.');
+        return;
+    }
+    if (!form.program_id) {
+        alert('Please select a program.');
+        return;
+    }
+    if (!form.batch_id) {
+        alert('Please select a batch.');
+        return;
+    }
+    if (!form.examCycle) {
+        alert('Please select an exam cycle.');
+        return;
+    }
     const formData = new FormData();
     formData.append('csv', csvFile.value);
     formData.append('department_id', form.department_id);
@@ -140,11 +179,12 @@ const fileUpload = () => {
     .then(response => {
         students.value = response.data.students;
         csvFile.value = null;
+        toast.success("Student Data uploaded successfully");
     })
     .catch(error => {
         console.log(error);
         csvFile.value = null;
-        alert('Error: ' + error.message);
+        toast.error(error.message);
     });
 }
 
@@ -163,6 +203,7 @@ const getPrograms = (departmentId) => {
     })
     .catch(error => {
         console.log(error);
+        toast.error(error);
     });
 
 }
@@ -181,5 +222,24 @@ const getPrograms = (departmentId) => {
 
 .aqua-spray {
     background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);
+}
+.card-shadow{
+    box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+    padding: 15px;
+    background: #fff;
+    border-radius: 12px;
+}
+.upload-icon {
+    background: #324edf;
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+    border-radius: 50px;
+    color: #fff;
+}
+
+.alert {
+    text-decoration: underline;
+    color: #007bff;
 }
 </style>

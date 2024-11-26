@@ -137,7 +137,7 @@
             <li class="nav-item">
                 <Link class="nav-link collapsed" :href="'/marksheet/index'">
                     <i class="bi bi-tropical-storm"></i>
-                    <span>Marksheet Upload</span>
+                    <span>Student Data</span>
                 </Link>
             </li>
             <!-- student -->
@@ -253,7 +253,8 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style>
+body{background:#f6f9ff;}
 @media only screen and (min-width: 1200px) and (max-width: 5000px) {
     .hide-desktop {
         display: none !important;

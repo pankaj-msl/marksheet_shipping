@@ -55,8 +55,8 @@ class PublicController extends Controller
         if ($response->successful() && isset($response->json()['data']) && !empty($response->json()['data'])) {
             return $response->json()['data'][0];
         } else {
-            // return response()->json(['error' => 'Invalid response from the API'], 400);
-            abort(400, "Invalid response from the API");
+            abort( response('Invalid response from the API', 401) );
+            // abort( response()->json('Invalid response from the API', 401) );
         }
 
         return null;

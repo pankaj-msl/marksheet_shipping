@@ -1,6 +1,4 @@
 <template>
-    <!-- <Header :data="{ client, admin }"></Header> -->
-    
         <!-- End Page Title -->
         <section class="section">
             <v-sheet class="elevation-4 rounded">
@@ -33,7 +31,7 @@
                     </v-col>
                 </v-row>
             </v-form>
-            <v-card v-if="student" class="mx-12 elevation-4">
+            <v-card v-if="Object.keys(student).length > 0" class="mx-12 elevation-4">
                 <v-card-title class="text-h6 text-center">{{ student.student_name }}</v-card-title>
                 <v-card-subtitle class="text-center">Roll No: {{ student.student_roll_no }}</v-card-subtitle>
 
@@ -281,6 +279,37 @@ const formatDate = (dateString) => {
 </script>
 
 <style scoped>
+.header {
+    background-color: #3f51b5; /* Primary color */
+    color: white; /* Text color */
+    padding: 20px; /* Padding around the header */
+    text-align: center; /* Center the text */
+}
+
+.header-content {
+    display: flex; /* Flexbox for alignment */
+    justify-content: center; /* Center title horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.title {
+    font-size: 2.5rem; /* Large title font */
+    margin: 0; /* Remove default margin */
+}
+
+.header-subtitle {
+    margin-top: 10px; /* Space above the subtitle */
+}
+
+.header-subtitle h2 {
+    font-size: 1.5rem; /* Subtitle font size */
+    margin: 0; /* Remove default margin */
+}
+
+.header-subtitle p {
+    font-size: 1rem; /* Description font size */
+    margin: 5px 0 0 0; /* Margin adjustments */
+}
 
 .ooey-gooey {
     background: linear-gradient(90deg, #0700b8 0%, #00ff88 100%);

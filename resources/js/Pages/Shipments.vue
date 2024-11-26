@@ -234,20 +234,14 @@
 <!-- ======================================== Pagination Ends Here ===================================== -->
         </section>
     </main>
-
-<v-snackbar
-v-model="snackbar"
-:timeout="5000"
-color="orange-darken-2"
-elevation="24">
-{{ message }}
-</v-snackbar>
 </template>
 
 <script setup>
 import Header from "./Layouts/Header.vue";
 import { ref, watch, onBeforeMount } from "vue";
 import { usePage, router } from "@inertiajs/vue3";
+import { useToast } from "vue-toastification";
+
 defineProps({
     client: {
         type: Object,
@@ -263,8 +257,7 @@ let search = ref("");
 let students = ref({});
 let debounceTimeout = null;
 let pageNumber = ref(1);
-let snackbar = ref(false);
-let message = ref("");
+const toast = useToast();
 
 // Watch the search query and debounce the API call
 watch(search, (newVal) => {
@@ -301,8 +294,7 @@ const getFilteredData = () => {
      })
      .catch((error) => {
          console.error(error.message);
-         message.value = error.message;
-         snackbar.value = true;
+         toast.error(error.message);
      });
 }
 
@@ -327,6 +319,7 @@ const generateReport = (studentId) => {
     })
     .catch((error) => {
         console.error(error.message);
+        toast.error(error.message);
     });
 }
 
@@ -347,6 +340,7 @@ const downloadReport = () => {
     })
     .catch((error) => {
         console.error(error.message);
+        toast.error(error.message);
     });
 }
 

@@ -367,14 +367,6 @@
             </div>
         </div>
  </v-dialog>
-
- <v-snackbar
-v-model="snackbar"
-:timeout="5000"
-color="orange-darken-2"
-elevation="24">
-{{ message }}
-</v-snackbar>
         </section>
     </main>
     
@@ -385,6 +377,8 @@ import Header from "./Layouts/Header.vue";
 import { usePage, useForm, router, Link} from '@inertiajs/vue3'
 import axios from 'axios';
 import { watch, ref, computed } from 'vue';
+import { useToast } from "vue-toastification";
+
 
 defineProps({
     student: {
@@ -411,8 +405,7 @@ console.log(shipments);
 let selectedDocuments = ref([]);
 const showShipmentModal = ref(false);
 let documents = ref([]);
-const message = ref('');
-const snackbar = ref(false);
+const toast = useToast();
 let modalTitle = ref('');
 
 
@@ -476,11 +469,11 @@ const createOrUpdateShipment = () =>{
          student.value = response.data.student;
          shipments.value = response.data.shipments;
          usePage().props.student = student;
-         message.value = "Shipment created successfully!";
-         snackbar.value = true;
+         toast.success("Shipment created successfully!");
      })
      .catch((error) => {
          console.error(error);
+         toast.error("Failed to create shipment!");
      });
 }
 
