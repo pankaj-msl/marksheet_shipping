@@ -117,6 +117,25 @@
                                 <tbody
                                     class="divide-y divide-gray-200 bg-white"
                                 >
+                                <!-- Handle students data while fetching from server -->
+                                 <tr v-if="loading">
+                                     <td
+                                         class="text-center px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                                         :colspan="7"
+                                     >
+                                         Loading students data please wait ...
+                                     </td>
+                                 </tr>
+                                <!-- Handle students data if it is empty -->
+                                 <tr v-if="students.length === 0">
+                                     <td
+                                         class="text-center px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                                         :colspan="7"
+                                     >
+                                         No data is available
+                                     </td>
+                                 </tr>
+                                <!-- Display student data here -->
                                     <tr
                                         v-for="student in students.data"
                                         :key="student.id"
@@ -556,6 +575,7 @@ const filterByPassStatus = ref("");
 const filterByGeneratedStatus = ref("");
 const toast = useToast();
 let debounceTimeout = null;
+const loading = ref(false);
 
 const props = defineProps({
     students: {
@@ -607,6 +627,7 @@ const updatePageNumber = (link) => {
 
 //main function
 const getFilteredData = () => {
+    loading.value = true;
     axios
         .get("/marksheet/search", {
             params: {
@@ -619,9 +640,11 @@ const getFilteredData = () => {
         .then((response) => {
             console.log(response);
             students.value = response.data.students;
+            loading.value = false;
         })
         .catch((error) => {
             toast.error(error.response.data.error);
+            loading.value = false;
         });
 };
 

@@ -102,6 +102,30 @@
                             </th>
                         </tr>
                     </thead>
+                    <!-- Handle students data -->
+                    <tbody v-if="loading || students.data.length === 0"
+                        class="divide-y divide-gray-200 bg-white"
+                    >
+                        <!-- Handle students data if it is empty -->
+                        <tr v-if="loading">
+                            <td
+                                class="text-center px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                                :colspan="7"
+                            >
+                                Loading students data please wait ...
+                            </td>
+                        </tr>
+                    <!-- Handle students data if it is empty -->
+                        <tr v-if="students.data.length === 0">
+                            <td
+                                class="text-center px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                                :colspan="7"
+                            >
+                                Oops no students data available
+                            </td>
+                        </tr>
+                    </tbody>
+                    <!-- Display students data -->
                     <tbody v-for="student in students.data"
                         class="divide-y divide-gray-200 bg-white"
                     >
@@ -258,6 +282,7 @@ let students = ref({});
 let debounceTimeout = null;
 let pageNumber = ref(1);
 const toast = useToast();
+const loading = ref(false);
 
 // Watch the search query and debounce the API call
 watch(search, (newVal) => {
@@ -280,6 +305,7 @@ const updatePageNumber = (link) => {
 
 //main function
 const getFilteredData = () => {
+    loading.value = true;
     axios.get('/shipments/view', {
         params: {
             query: search.value,
@@ -290,10 +316,12 @@ const getFilteredData = () => {
     })
     .then((response) => {
         console.log(response);
+        loading.value = false;
          students.value = response.data.students;
      })
      .catch((error) => {
          console.error(error.message);
+         loading.value = false;
          toast.error(error.message);
      });
 }
