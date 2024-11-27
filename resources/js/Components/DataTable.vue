@@ -19,65 +19,6 @@
             ></v-text-field>
         </v-col>
         <v-col cols="12" md="12" class="px-5"><hr /></v-col>
-        <v-col cols="12" md="3">
-            <v-row class="justify-content-center align-items-center">
-                <v-col cols="12" md="12" class="py-2">
-                    <p class="custom-title">Select Students and Generate Documents</p>
-
-                    <div class="form-floating">
-                        <select
-                            @change="fetchDocs"
-                            v-model="docType"
-                            class="select2 form-control"
-                        >
-                            <option value="documents">Final Documents</option>
-                            <option value="semesters">
-                                Semester Marksheet
-                            </option>
-                        </select>
-                        <label for="floatingSelect">Update Document Type</label>
-                    </div>
-                </v-col>
-                <v-col v-if="docType" cols="12" md="12" class="py-2">
-                    <p class="">Select  Documents to be Generated</p>
-                    <v-combobox
-                        v-model="selectedDocuments"
-                        color="primary"
-                        :items="documents"
-                        chips
-                        variant="outlined"
-                        multiple
-                    ></v-combobox>
-                </v-col>
-                <v-col v-if="selectedDocuments.length > 0" cols="12" md="12" class="d-flex justify-content-center align-items-center py-2 px-2">
-                    <v-btn
-                        @click="generateDocument()"
-                        class="btn btn-primary text-subtitle-1 text-white"
-                        ><v-icon icon="mdi-check-circle"></v-icon> Generate
-                        Document</v-btn
-                    >
-                </v-col>
-
-                <div data-v-22f91e27="" class="v-col-md-12 v-col-12"><hr data-v-22f91e27=""></div>
-
-                <v-col cols="12" md="12">
-                    <p class="custom-title">Selects Students and Update Exam Status</p>
-                    <div class="form-floating mb-3">
-                        <select
-                            @change="updatePassStatus"
-                            v-model="passStatus"
-                            class="select2 form-control"
-                        >
-                            <option value="passed">Passed</option>
-                            <option value="failed">Failed</option>
-                            <option value="pending">Pending</option>
-                        </select>
-                        <label for="floatingSelect">Update Exam Status</label>
-                    </div>
-                </v-col>
-            </v-row>
-        </v-col>
-
         <v-col cols="12" md="9">
             <div class="flex flex-col">
                 <div class="">
@@ -429,6 +370,66 @@
 
             <!-- ======================================== Pagination Ends Here ===================================== -->
         </v-col>
+        <v-col cols="12" md="3">
+            <v-row class="justify-content-center align-items-center">
+                <v-col cols="12" md="12" class="py-2">
+                    <p class="custom-title">Select Students and Generate Documents</p>
+
+                    <div class="form-floating">
+                        <select
+                            @change="fetchDocs"
+                            v-model="docType"
+                            class="select2 form-control"
+                        >
+                            <option value="documents">Final Documents</option>
+                            <option value="semesters">
+                                Semester Marksheet
+                            </option>
+                        </select>
+                        <label for="floatingSelect">Update Document Type</label>
+                    </div>
+                </v-col>
+                <v-col v-if="docType" cols="12" md="12" class="py-2">
+                    <p class="">Select  Documents to be Generated</p>
+                    <v-combobox
+                        v-model="selectedDocuments"
+                        color="primary"
+                        :items="documents"
+                        chips
+                        variant="outlined"
+                        multiple
+                    ></v-combobox>
+                </v-col>
+                <v-col v-if="selectedDocuments.length > 0" cols="12" md="12" class="d-flex justify-content-center align-items-center py-2 px-2">
+                    <v-btn
+                        @click="generateDocument()"
+                        class="btn btn-primary text-subtitle-1 text-white"
+                        ><v-icon icon="mdi-check-circle"></v-icon> Generate
+                        Document</v-btn
+                    >
+                </v-col>
+
+                <div data-v-22f91e27="" class="v-col-md-12 v-col-12"><hr data-v-22f91e27=""></div>
+
+                <v-col cols="12" md="12">
+                    <p class="custom-title">Selects Students and Update Exam Status</p>
+                    <div class="form-floating mb-3">
+                        <select
+                            @change="updatePassStatus"
+                            v-model="passStatus"
+                            class="select2 form-control"
+                        >
+                            <option value="passed">Passed</option>
+                            <option value="failed">Failed</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                        <label for="floatingSelect">Update Exam Status</label>
+                    </div>
+                </v-col>
+            </v-row>
+        </v-col>
+
+        
     </v-row>
 
     <!-- ============================ Document Generation Modal ============================= -->

@@ -39,7 +39,7 @@
                     <strong>Exam Cycle:</strong> {{ student.exam_cycle }}
                     </v-col>
                     <v-col cols="3" class="py-1">
-                    <strong>Passing Year:</strong> {{ student.student_passing_year }}
+                    <strong>Passing Year:</strong> {{ format(parseISO(student.student_passing_year), 'dd MMMM yyyy')  }}
                     </v-col>
                     <v-col cols="3" class="py-1">
                     <strong>Exam Status:</strong> {{ student.student_exam_status }}
@@ -377,6 +377,7 @@ import Header from "./Layouts/Header.vue";
 import { usePage, useForm, router, Link} from '@inertiajs/vue3'
 import axios from 'axios';
 import { watch, ref, computed } from 'vue';
+import { format, parseISO } from 'date-fns';
 import { useToast } from "vue-toastification";
 
 
