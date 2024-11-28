@@ -421,7 +421,7 @@ const form = useForm({
     amount: "",
     delivery_status: "",
     delivered_at: ""
-})
+});
 
 const showCreateShipment = () => {
     modalTitle.value = "Create Shipment";
@@ -461,22 +461,49 @@ const showUpdateShipment = (shipment)=>{
     showShipmentModal.value = true;
 }
 
-const createOrUpdateShipment = () =>{
-    axios.post('/shipments/create', form)
-    .then((response) => {
-         console.log(response);
-         form.value = {};
-         showShipmentModal.value = false;
-         student.value = response.data.student;
-         shipments.value = response.data.shipments;
-         usePage().props.student = student;
-         toast.success("Shipment created successfully!");
-     })
-     .catch((error) => {
-         console.error(error);
-         toast.error("Failed to create shipment!");
-     });
-}
+const createOrUpdateShipment = () => {
+    // Convert form to plain object
+    const formData = {
+        student_id: form.student_id,
+        document_ids: form.document_ids,
+        shipment_id: form.shipment_id,
+        tracking_id: form.tracking_id,
+        shipping_agent: form.shipping_agent,
+        shipping_address: form.shipping_address,
+        dispatched_at: form.dispatched_at,
+        amount: form.amount,
+        delivery_status: form.delivery_status,
+        delivered_at: form.delivery_status === 'delivered' ? form.delivered_at : null
+    };
+
+    axios.post('/shipments/create', formData)
+        .then((response) => {
+            form.value = {};
+            showShipmentModal.value = false;
+
+            // Update the page state
+            student.value = response.data.student;
+            shipments.value = response.data.shipments;
+            
+            // Update Inertia page props manually
+            usePage().props.student = response.data.student;
+            usePage().props.shipments = response.data.shipments;
+
+            toast.success("Shipment created successfully!");
+        })
+        .catch((error) => {
+            console.error('Error:', error.response?.data?.message || 'Something went wrong');
+            toast.error(error.response?.data?.message || "Failed to create shipment!");
+            
+            // Handle validation errors if any
+            if (error.response?.data?.errors) {
+                Object.keys(error.response.data.errors).forEach(key => {
+                    const message = error.response.data.errors[key][0];
+                    toast.error(`${key}: ${message}`);
+                });
+            }
+        });
+};
 
 watch(form, (newVal)=>{
     console.log(newVal);
